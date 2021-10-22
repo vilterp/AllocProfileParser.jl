@@ -1,0 +1,4 @@
+name = "AllocProfileParser"
+uuid = "88b71a7a-436b-4c57-8e93-fe6a5b6cf731"
+authors = ["Pete Vilter <7341+vilterp@users.noreply.github.com>"]
+version = "0.1.0"

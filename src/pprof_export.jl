@@ -26,8 +26,6 @@ function parse_location(loc_str::String)
     return (;function_name = function_name, file = file, line = line)
 end
 
-# TODO:
-
 function to_pprof(alloc_profile::AllocProfile
                ;
                web::Bool = true,
@@ -128,9 +126,12 @@ function to_pprof(alloc_profile::AllocProfile
         end
     end
 
+    function construct_location_for_type(typename)
+        # TODO: Lol something less hacky than this:
+        return maybe_add_location("$(typename) at /nothing:0")
+    end
 
-    for sample in alloc_profile.allocs
-        # convert the sample.stack to vector of location_ids
+    for sample in alloc_profile.allocs        # convert the sample.stack to vector of location_ids
         # for each location in the sample.stack, if it's the first time seeing it,
         # we also enter that location into the locations table
         location_ids = UInt64[
@@ -138,8 +139,8 @@ function to_pprof(alloc_profile::AllocProfile
             for location in sample.stack
         ]
 
-        # TODO: Add location_id for the type:
-        #push!(location_ids, construct_location_for_type(sample.type))
+        # Add location_id for the type:
+        pushfirst!(location_ids, construct_location_for_type(sample.type))
 
         # report the value: allocs = 1 (count)
         # report the value: size (bytes)

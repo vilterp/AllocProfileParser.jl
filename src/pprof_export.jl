@@ -60,7 +60,7 @@ function to_pprof(alloc_profile::AllocProfile
     locations = Vector{Location}()
 
     sample_type = [
-        ValueType!("instances", "count"), # Mandatory
+        ValueType!("allocs", "count"), # Mandatory
         ValueType!("size", "bytes")
     ]
 

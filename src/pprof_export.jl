@@ -99,7 +99,7 @@ function to_pprof(alloc_profile::AllocProfile
                 funcProto = Function()
                 funcProto.id = func_id
                 file = function_name
-                simple_name = PProf._escape_name_for_pprof(file_name)
+                simple_name = PProf._escape_name_for_pprof(function_name)
                 # TODO: Get full name with arguments from profile data
                 local full_name_with_args
                 # WEIRD TRICK: By entering a separate copy of the string (with a

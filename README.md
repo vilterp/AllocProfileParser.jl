@@ -20,3 +20,7 @@ GC.stop_and_write_alloc_profile(file)
 prof = AllocProfileParser.parse_alloc_profile("my-profile.json")
 AllocProfileParser.to_pprof(prof)
 ```
+
+You should see something like:
+
+![PProf](images/pprof.png)

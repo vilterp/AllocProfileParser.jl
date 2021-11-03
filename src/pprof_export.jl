@@ -36,6 +36,7 @@ function to_pprof(alloc_profile::AllocProfile
                drop_frames::Union{Nothing, AbstractString} = nothing,
                keep_frames::Union{Nothing, AbstractString} = nothing,
                ui_relative_percentages::Bool = true,
+               aggregate_by_type::Bool = false,
             )
     period = UInt64(0x1)
 
@@ -139,8 +140,10 @@ function to_pprof(alloc_profile::AllocProfile
             for location in sample.stack
         ]
 
-        # Add location_id for the type:
-        pushfirst!(location_ids, construct_location_for_type(sample.type))
+        if aggregate_by_type
+            # Add location_id for the type:
+            pushfirst!(location_ids, construct_location_for_type(sample.type))
+        end
 
         # report the value: allocs = 1 (count)
         # report the value: size (bytes)
@@ -150,7 +153,14 @@ function to_pprof(alloc_profile::AllocProfile
         ]
         # TODO: Consider reporting a label? (Dangly thingy)
 
-        push!(prof.sample, Sample(;location_id = location_ids, value = value))
+        labels = Label[
+            Label(key = enter!("bytes"), num = sample.size, num_unit = enter!("bytes")),
+        ]
+        if !aggregate_by_type
+            push!(labels, Label(key = enter!("type"), str = enter!(sample.type)))
+        end
+
+        push!(prof.sample, Sample(;location_id = location_ids, value = value, label = labels))
     end
 
 
